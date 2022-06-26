@@ -1,0 +1,36 @@
+server:
+  port: 8888
+loadbalancer:
+  client:
+    name: say-hello
+spring:
+  application:
+    name: gw-s1
+  cloud:
+    enabled: true
+    failFast: true
+    loadbalancer:
+      ribbon:
+        enabled: false
+      health-check:
+        default:
+          path: /health
+        say-hello:
+          path: /health
+        retry-on-all-operations:
+      retry:
+        avoid-previous-instance:
+
+    gateway:
+      routes:
+        - id: say-hello
+          uri: mylb://service
+          predicates:
+            - Path=/service/**
+          filters:
+            - StripPrefix=1
+    refresh:
+      enabled:
+logging:
+  level:
+    root: DEBUG
